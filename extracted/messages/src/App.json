@@ -1,0 +1,12 @@
+[
+  {
+    "id": "app.title",
+    "description": "Welcome header on app main page",
+    "defaultMessage": "Welcome to {what}"
+  },
+  {
+    "id": "app.intro",
+    "description": "Text on main page",
+    "defaultMessage": "To get started, edit <code>src/App.js</code> and save to reload."
+  }
+]

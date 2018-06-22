@@ -1,0 +1,24 @@
+{
+  "name": "locize-react-intl-example",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "locizer": "^1.1.0",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-intl": "^2.4.0",
+    "react-scripts": "1.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "extract-messages": "NODE_ENV=production babel ./src  --out-file /dev/null"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-react-intl": "^2.4.0",
+    "babel-preset-react-app": "^3.1.1"
+  }
+}
