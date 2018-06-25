@@ -4,8 +4,9 @@ This is a basic sample using locize with react-intl.
 
 <img src="https://raw.githubusercontent.com/locize/locize-react-intl-example/master/images/preview.png" alt="react-intl incontext editor" width="500">
 
- features supported:
+features supported:
 
+- splitting translations into multiple files
 - incontext editor
 - loading translations from locize CDN
 - detection of user language

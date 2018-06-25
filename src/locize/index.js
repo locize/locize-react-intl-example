@@ -4,7 +4,7 @@ import locizer from 'locizer';
 import locizeEditor from 'locize-editor';
 
 const IS_DEV = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
-const NAMESPACE = 'translations'; // the translation file to use
+const DEFAULTNAMESPACE = 'common'; // the translation file to use
 const PROJECTID = 'da028c03-435a-4587-af3a-086de8c7bd9b'; // your project id
 const APIKEY = 'ENTER_YOUR_API_KEY_FOR_SAVE_MISSING';
 const REFERENCELANGUAGE = 'en';
@@ -24,6 +24,11 @@ locizer
 const translations = {};
 let currentLocale;
 
+const LocizeContext = React.createContext({
+  locale: null,
+  namespace: null
+});
+
 export class IntlProvider extends Component {
   constructor(props) {
     super(props);
@@ -35,7 +40,7 @@ export class IntlProvider extends Component {
 
   componentDidMount() {
     // load the given file form locize and detect language while doing so
-    locizer.load(NAMESPACE, (err, messages, locale) => {
+    locizer.load(this.props.namespace || DEFAULTNAMESPACE, (err, messages, locale) => {
       currentLocale = locale;
       translations[locale] = messages;
 
@@ -56,7 +61,7 @@ export class IntlProvider extends Component {
         // init incontext editor
         locizeEditor.init({
           lng: locale,
-          defaultNS: NAMESPACE,
+          defaultNS: DEFAULTNAMESPACE,
           referenceLng: REFERENCELANGUAGE,
           projectId: PROJECTID,
           private: PRIVATE
@@ -66,17 +71,41 @@ export class IntlProvider extends Component {
   }
 
   render() {
-    const { children } = this.props;
+    const { children, namespace } = this.props;
     const { locale, messages } = this.state;
 
     if (!locale) return null; // we wait for render until loaded
 
     // render the react-intl IntlProvider with loaded messages
     return (
-      <IP locale={locale} messages={messages}>
-        {children}
-      </IP>
+      <LocizeContext.Provider value={{ locale, namespace: namespace || DEFAULTNAMESPACE }}>
+        <IP locale={locale} messages={messages}>
+          {children}
+        </IP>
+      </LocizeContext.Provider>
     );
+  }
+}
+
+// hoc for context
+function withContext() {
+  return function Wrapper(WrappedComponent) {
+
+    class WithContext extends Component {
+      render() {
+        return (
+          <LocizeContext.Consumer>
+            {
+              ctx => (
+                <WrappedComponent {...this.props} locale={ctx.locale} namespace={ctx.namespace} />
+              )
+            }
+          </LocizeContext.Consumer>
+        )
+      }
+    }
+
+    return WithContext;
   }
 }
 
@@ -88,7 +117,7 @@ function supportLocize() {
       constructor(props, context) {
         super(props, context);
 
-        const { id, defaultMessage, description } = props;
+        const { id, defaultMessage, description, namespace } = props;
 
         // get current value in message catalog
         const currentValue = translations[currentLocale] && translations[currentLocale][id]
@@ -96,13 +125,13 @@ function supportLocize() {
         // depeding on not yet exists or changed
         // save or update the value on locize
         if (SAVE_NEW_VALUES && !currentValue) {
-          locizer.add(NAMESPACE, id, defaultMessage, description);
+          locizer.add(namespace, id, defaultMessage, description);
         } else if (UPDATE_VALUES && currentValue !== defaultMessage) {
-          locizer.update(NAMESPACE, id, defaultMessage, description)
+          locizer.update(namespace, id, defaultMessage, description)
         }
 
         // send last used information
-        locizer.used(NAMESPACE, id);
+        locizer.used(namespace, id);
       }
 
       render() {
@@ -110,8 +139,7 @@ function supportLocize() {
       }
     }
 
-
-    return LocizeExtension;
+    return withContext()(LocizeExtension);
   }
 }
 

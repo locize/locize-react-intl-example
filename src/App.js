@@ -7,6 +7,8 @@ import './App.css';
 // in production you get the regular unextended react-intl components
 import { FormattedMessage, FormattedHTMLMessage } from './locize';
 
+import ComponentWithAnotherNamespace from './ComponentWithAnotherNamespace';
+
 class App extends Component {
   render() {
     return (
@@ -29,6 +31,7 @@ class App extends Component {
             description="Text on main page"
           />
         </p>
+        <ComponentWithAnotherNamespace />
       </div>
     );
   }
