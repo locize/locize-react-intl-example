@@ -17,7 +17,7 @@ features supported:
 
 # Getting started
 
-1) Create an user account and create a project at [https://locize.com](https://locize.com) and copy your projectId and API key to the variables in `src/locize/index.js` -> [here](https://github.com/locize/locize-react-intl-example/blob/master/src/locize/index.js#L8)!
+1) Create an user account and create a project at [https://locize.com](https://locize.com) and copy your projectId and API key (found in project -> settings) to the variables in `src/locize/index.js` -> [here](https://github.com/locize/locize-react-intl-example/blob/master/src/locize/index.js#L8)!
 
 <img src="https://raw.githubusercontent.com/locize/locize-react-intl-example/master/images/settings.png" alt="react-intl features" width="500">
 
