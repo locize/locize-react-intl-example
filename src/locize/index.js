@@ -39,8 +39,13 @@ export class IntlProvider extends Component {
   }
 
   componentDidMount() {
+    const namespace = this.props.namespace || DEFAULTNAMESPACE;
+
+    // return if already loaded
+    if (currentLocale && translations[currentLocale] && translations[currentLocale][namespace]) return;
+
     // load the given file form locize and detect language while doing so
-    locizer.load(this.props.namespace || DEFAULTNAMESPACE, (err, messages, locale) => {
+    locizer.load(namespace, (err, messages, locale) => {
       currentLocale = locale;
       translations[locale] = messages;
 
@@ -120,7 +125,7 @@ function supportLocize() {
         const { id, defaultMessage, description, namespace } = props;
 
         // get current value in message catalog
-        const currentValue = translations[currentLocale] && translations[currentLocale][id]
+        const currentValue = translations[currentLocale] && translations[currentLocale][namespace] && translations[currentLocale][namespace][id]
 
         // depeding on not yet exists or changed
         // save or update the value on locize
