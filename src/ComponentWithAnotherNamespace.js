@@ -1,7 +1,7 @@
 import React from 'react';
 
 // see ./locize/index.js for details on provided components
-import { IntlProvider, FormattedMessage } from "./locize";
+import { IntlProvider, FormattedMessage } from "locize";
 
 export default function ComponentWithAnotherNamespace() {
   return (

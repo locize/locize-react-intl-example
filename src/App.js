@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import logo from 'logo.svg';
+import 'App.css';
 
 // see ./locize/index.js in development mode the react-intl components are
 // extended to provide features like save of new ids, ...
 // in production you get the regular unextended react-intl components
-import { FormattedMessage, FormattedHTMLMessage } from './locize';
+import { FormattedMessage, FormattedHTMLMessage } from 'locize';
 
-import ComponentWithAnotherNamespace from './ComponentWithAnotherNamespace';
+import ComponentWithAnotherNamespace from 'ComponentWithAnotherNamespace';
+import ComponentUsingMacro from 'ComponentUsingMacro';
 
 class App extends Component {
   render() {
@@ -32,6 +33,8 @@ class App extends Component {
           />
         </p>
         <ComponentWithAnotherNamespace />
+        <hr />
+        <ComponentUsingMacro />
       </div>
     );
   }
