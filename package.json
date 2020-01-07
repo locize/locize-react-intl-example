@@ -7,7 +7,7 @@
     "locize-editor": "2.0.0",
     "locizer": "2.0.0",
     "react": "16.4.1",
-    "react-dom": "16.4.1",
+    "react-dom": "16.4.2",
     "react-intl": "2.4.0",
     "react-scripts": "^2.0.0"
   },
