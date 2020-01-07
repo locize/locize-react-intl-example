@@ -2,7 +2,7 @@ import React from 'react';
 
 // see ./locize/index.js for details on provided components
 import { IntlProvider } from "locize";
-import { FormattedMessage, FormattedHTMLMessage, Select, SelectHtml, Plural, PluralHtml } from "intl.macro";
+import { FormattedMessage, FormattedHTMLMessage, Select, SelectHtml, Plural, PluralHtml } from "./intl.macro";
 
 // as we "bend" some es-lint rules we need to disable those
 // this let us write "{ trainersCount, number }" or "{ catchDate, date, short }"

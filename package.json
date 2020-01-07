@@ -4,12 +4,12 @@
   "private": true,
   "dependencies": {
     "babel-plugin-macros": "^2.3.0",
-    "locize-editor": "1.5.1",
-    "locizer": "1.2.1",
+    "locize-editor": "2.0.0",
+    "locizer": "2.0.0",
     "react": "16.4.1",
     "react-dom": "16.4.1",
     "react-intl": "2.4.0",
-    "react-scripts": "^2.0.0-next.47d2d941"
+    "react-scripts": "^2.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
