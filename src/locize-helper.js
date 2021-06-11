@@ -1,27 +1,21 @@
 import React, { Component } from 'react';
-import { FormattedMessage as FM, FormattedHTMLMessage as FHM, IntlProvider as IP, addLocaleData } from 'react-intl';
+import { FormattedMessage as FM, IntlProvider as IP } from 'react-intl';
 import locizer from 'locizer';
-import locizeEditor from 'locize-editor';
+import 'locize';
 
 const IS_DEV = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
 const DEFAULTNAMESPACE = 'common'; // the translation file to use
 const PROJECTID = 'da028c03-435a-4587-af3a-086de8c7bd9b'; // your project id
 const APIKEY = 'ENTER_YOUR_API_KEY_FOR_SAVE_MISSING';
-const REFERENCELANGUAGE = 'en';
-const FALLBACKLANGUAGE = 'en';
 const SAVE_NEW_VALUES = true; // should send newly added react-intl Formatted(HRML)Message to locize
 const UPDATE_VALUES = true; // should update on locize if value changes in code
-const PRIVATE = false; // private publish
 
-locizer
-  .init({
-    fallbackLng: FALLBACKLANGUAGE,
-    referenceLng: REFERENCELANGUAGE,
-    projectId: PROJECTID,
-    apiKey: APIKEY,
-  });
+locizer.init({
+  projectId: PROJECTID,
+  apiKey: APIKEY
+});
 
-const translations = {};
+let translations = {};
 let currentLocale;
 
 const LocizeContext = React.createContext({
@@ -29,12 +23,26 @@ const LocizeContext = React.createContext({
   namespace: null
 });
 
+export const LanguageContext = LocizeContext;
+
 export class IntlProvider extends Component {
   constructor(props) {
     super(props);
     this.state = {
       locale: null,
-      messages: {}
+      setLocale: (locale) => {
+        this.setState({ locale });
+
+        if (window.history.pushState) {
+          const url = new URL(window.location);
+          if (url.searchParams.has('lng')) {
+            url.searchParams.set('lng', locale);
+          } else {
+            url.searchParams.append('lng', locale);
+          }
+          window.history.pushState({}, '', url);
+        }
+      }
     };
   }
 
@@ -45,46 +53,27 @@ export class IntlProvider extends Component {
     if (currentLocale && translations[currentLocale] && translations[currentLocale][namespace]) return;
 
     // load the given file form locize and detect language while doing so
-    locizer.load(namespace, (err, messages, locale) => {
-      currentLocale = locale;
-      translations[locale] = messages;
-
-      // load react intl locale data
-      import('react-intl/locale-data/' + locale)
-        .then(localeData => {
-          addLocaleData(localeData);
-
-          // update state to render children
-          this.setState({
-            locale,
-            messages
-          });
-        });
-
-      // init editor if development
-      if (IS_DEV) {
-        // init incontext editor
-        locizeEditor.init({
-          lng: locale,
-          defaultNS: DEFAULTNAMESPACE,
-          referenceLng: REFERENCELANGUAGE,
-          projectId: PROJECTID,
-          private: PRIVATE
-        })
-      }
+    locizer.loadAll(namespace, (err, messages) => {
+      currentLocale = this.props.locale || locizer.lng || locizer.referenceLng;
+      Object.keys(messages).forEach((l) => {
+        translations[l] = translations[l] || {};
+        translations[l][namespace] = messages[l];
+      })
+      if (this.state.locale !== currentLocale) this.setState({ locale: currentLocale });
     });
   }
 
   render() {
-    const { children, namespace } = this.props;
-    const { locale, messages } = this.state;
+    const { children, namespace, locale: localeViaProps } = this.props;
+    const { locale: localeViaState, setLocale } = this.state;
+    const locale = localeViaProps || localeViaState || currentLocale;
 
-    if (!locale) return null; // we wait for render until loaded
+    if (!locale || !translations[locale] || !translations[locale][namespace]) return null; // we wait for render until loaded
 
     // render the react-intl IntlProvider with loaded messages
     return (
-      <LocizeContext.Provider value={{ locale, namespace: namespace || DEFAULTNAMESPACE }}>
-        <IP locale={locale} messages={messages}>
+      <LocizeContext.Provider value={{ locale, namespace: namespace || DEFAULTNAMESPACE, setLocale }}>
+        <IP locale={locale} messages={translations[locale][namespace]}>
           {children}
         </IP>
       </LocizeContext.Provider>
@@ -125,7 +114,7 @@ function supportLocize() {
         const { id, defaultMessage, description, namespace } = props;
 
         // get current value in message catalog
-        const currentValue = translations[currentLocale] && translations[currentLocale][namespace] && translations[currentLocale][namespace][id]
+        const currentValue = translations[locizer.referenceLng] && translations[locizer.referenceLng][namespace] && translations[locizer.referenceLng][namespace][id]
 
         // depeding on not yet exists or changed
         // save or update the value on locize
@@ -149,5 +138,4 @@ function supportLocize() {
 }
 
 // if is development environment we export extended react-intl components
-export const FormattedMessage = IS_DEV ? supportLocize()(FM) : FM;
-export const FormattedHTMLMessage = IS_DEV ? supportLocize()(FHM) : FHM;
+export const FormattedMessage = (IS_DEV && APIKEY) ? supportLocize()(FM) : FM;

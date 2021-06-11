@@ -1,11 +1,11 @@
 import React from 'react';
 
-// see ./locize/index.js for details on provided components
-import { IntlProvider, FormattedMessage } from "locize";
+// see ./locize-helper.js for details on provided components
+import { IntlProvider, FormattedMessage } from './locize-helper';
 
-export default function ComponentWithAnotherNamespace() {
+export default function ComponentWithAnotherNamespace({ locale }) {
   return (
-    <IntlProvider namespace="anotherNamespace">
+    <IntlProvider namespace="anotherNamespace" locale={locale}>
       <p>
         <FormattedMessage
           id="app.locize"

@@ -17,7 +17,7 @@ features supported:
 
 # Getting started
 
-1) Create an user account and create a project at [https://locize.com](https://locize.com) and copy your projectId and API key (found in project -> settings) to the variables in `src/locize/index.js` -> [here](https://github.com/locize/locize-react-intl-example/blob/master/src/locize/index.js#L8)!
+1) Create an user account and create a project at [https://locize.com](https://locize.com) and copy your projectId and API key (found on the developer page) to the variables in `src/locize-helper.js` -> [here](https://github.com/locize/locize-react-intl-example/blob/master/src/locize-helper.js#L8)!
 
 Important: make sure you toggle the publish format for your project to `json flat` and have the i18n format set to `icu / messageformat`! To match react-intl format of json when downloading.
 
@@ -27,8 +27,8 @@ Important: make sure you toggle the publish format for your project to `json fla
 
 3) Refresh your browser window with your locize project to see the newly added strings.
 
-Open `http://localhost:3000/?locize=true` to show the incontext editor -> click a text fragment to edit it in locize
+Add `http://localhost:3000` in the locize incontext editor -> click a text fragment to edit it in locize
 
-Add an additional language translate it using the locize UI. Open `http://localhost:3000/?lng=de` to eg. open app with english language. (Attention the call for supported languages is cached for performance reasons and might take 1 hour to reflect the newly added language support!).
+Add an additional language translate it using the locize UI. Open `http://localhost:3000/?lng=de` to eg. open app with german language. (Attention the call for supported languages is cached for performance reasons and might take 1 hour to reflect the newly added language support!).
 
-For implementation details see comments in `src/locize/index.js`
+For implementation details see comments in `src/locize-helper.js`

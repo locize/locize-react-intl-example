@@ -1,12 +1,12 @@
 const { createMacro } = require('babel-plugin-macros');
 
-const IMPORT_FROM = 'locize'; // not using locize rename this to react-intl
+const IMPORT_FROM = './locize-helper'; // not using locize rename this to react-intl
 
 module.exports = createMacro(IntlMacro);
 
 function IntlMacro({ references, state, babel }) {
   const t = babel.types;
-  const { FormattedHTMLMessage = [], FormattedMessage = [], Plural = [], PluralHtml = [], Select = [], SelectHtml = [] } = references;
+  const { FormattedMessage = [], Plural = [], Select = [] } = references;
 
   // assert we have the react-i18next Trans component imported
   addNeededImports(state, babel);
@@ -27,24 +27,6 @@ function IntlMacro({ references, state, babel }) {
     }
   });
 
-  // transform PluralHtml
-  PluralHtml.forEach(referencePath => {
-    if (referencePath.parentPath.type === 'JSXOpeningElement') {
-      pluralAsJSX(
-        referencePath.parentPath,
-        {
-          attributes: referencePath.parentPath.get('attributes'),
-          children: referencePath.parentPath.parentPath.get('children'),
-        },
-        babel,
-        true
-      );
-    } else {
-      // throw a helpful error message or something :)
-    }
-  });
-
-
   // transform Select
   Select.forEach(referencePath => {
     if (referencePath.parentPath.type === 'JSXOpeningElement') {
@@ -55,23 +37,6 @@ function IntlMacro({ references, state, babel }) {
           children: referencePath.parentPath.parentPath.get('children'),
         },
         babel
-      );
-    } else {
-      // throw a helpful error message or something :)
-    }
-  });
-
-  // transform SelectHtml
-  SelectHtml.forEach(referencePath => {
-    if (referencePath.parentPath.type === 'JSXOpeningElement') {
-      selectAsJSX(
-        referencePath.parentPath,
-        {
-          attributes: referencePath.parentPath.get('attributes'),
-          children: referencePath.parentPath.parentPath.get('children'),
-        },
-        babel,
-        true
       );
     } else {
       // throw a helpful error message or something :)
@@ -93,22 +58,6 @@ function IntlMacro({ references, state, babel }) {
       // throw a helpful error message or something :)
     }
   });
-
-    // transform Trans
-    FormattedHTMLMessage.forEach(referencePath => {
-      if (referencePath.parentPath.type === 'JSXOpeningElement') {
-        formattedHtmlMessageAsJSX(
-          referencePath.parentPath,
-          {
-            attributes: referencePath.parentPath.get('attributes'),
-            children: referencePath.parentPath.parentPath.get('children'),
-          },
-          babel
-        );
-      } else {
-        // throw a helpful error message or something :)
-      }
-    });
 }
 
 function pluralAsJSX(parentPath, { attributes }, babel, innerHtml) {
@@ -149,7 +98,7 @@ function pluralAsJSX(parentPath, { attributes }, babel, innerHtml) {
   );
 
   // replace the node with the new Trans
-  parentPath.replaceWith(buildTransElement(extracted, extracted.attributesToCopy, t, true, false, innerHtml ? 'FormattedHTMLMessage' : 'FormattedMessage'));
+  parentPath.replaceWith(buildTransElement(extracted, extracted.attributesToCopy, t, true, false, 'FormattedMessage'));
 }
 
 function selectAsJSX(parentPath, { attributes }, babel, innerHtml) {
@@ -185,7 +134,7 @@ function selectAsJSX(parentPath, { attributes }, babel, innerHtml) {
   );
 
   // replace the node with the new Trans
-  parentPath.replaceWith(buildTransElement(extracted, extracted.attributesToCopy, t, true, false, innerHtml ? 'FormattedHTMLMessage' : 'FormattedMessage'));
+  parentPath.replaceWith(buildTransElement(extracted, extracted.attributesToCopy, t, true, false, 'FormattedMessage'));
 }
 
 function formattedMessageAsJSX(parentPath, { attributes, children }, babel) {
@@ -194,15 +143,6 @@ function formattedMessageAsJSX(parentPath, { attributes, children }, babel) {
   // replace the node with the new Trans
   children[0].parentPath.replaceWith(
     buildTransElement(extracted, cloneExistingAttributes(attributes), babel.types, false, true, 'FormattedMessage')
-  );
-}
-
-function formattedHtmlMessageAsJSX(parentPath, { attributes, children }, babel) {
-  const extracted = processTrans(children, babel);
-
-  // replace the node with the new Trans
-  children[0].parentPath.replaceWith(
-    buildTransElement(extracted, cloneExistingAttributes(attributes), babel.types, false, true, 'FormattedHTMLMessage')
   );
 }
 
@@ -339,7 +279,7 @@ function getValues(children, babel) {
 
 function addNeededImports(state, babel) {
   const t = babel.types;
-  const importsToAdd = ['FormattedMessage', 'FormattedHTMLMessage'];
+  const importsToAdd = ['FormattedMessage'];
 
   // check if there is an existing react-i18next import
   const existingImport = state.file.path.node.body.find(

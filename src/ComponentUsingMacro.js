@@ -1,8 +1,8 @@
 import React from 'react';
 
-// see ./locize/index.js for details on provided components
-import { IntlProvider } from "locize";
-import { FormattedMessage, FormattedHTMLMessage, Select, SelectHtml, Plural, PluralHtml } from "./intl.macro";
+// see ./locize-helper.js for details on provided components
+import { IntlProvider } from './locize-helper';
+import { FormattedMessage, Select, Plural } from './intl.macro';
 
 // as we "bend" some es-lint rules we need to disable those
 // this let us write "{ trainersCount, number }" or "{ catchDate, date, short }"
@@ -15,16 +15,21 @@ export default function ComponentUsingMacro() {
   const catchDate = new Date();
   const gender = 'male';
   const itemsCount1 = 1;
-  const itemsCount2 = 234;
 
   return (
     <IntlProvider namespace="macroNamespace">
       <div>
         <h2>Using babel macro</h2>
         <p><i>basic:</i></p>
-        <FormattedMessage id="welcome">Hello <b>{name}</b>!</FormattedMessage>
+        <FormattedMessage
+          id="welcome"
+          // values={{ strong: (val) => <strong>{val}</strong> }}
+        >Hello <strong>{name}</strong>!</FormattedMessage>
         <br />
-        <FormattedHTMLMessage id="welcome_alt">Hello - <strong>how are you!</strong></FormattedHTMLMessage>
+        <FormattedMessage
+          id="welcome_alt"
+          values={{ strong: (val) => <strong>{val}</strong> }}
+        >Hello - <strong>how are you!</strong></FormattedMessage>
         <br />
         <FormattedMessage id="trainers_count">Trainers: { trainersCount, number }</FormattedMessage>
         <br />
@@ -38,14 +43,6 @@ export default function ComponentUsingMacro() {
           female="She avoids bugs."
           other="They avoid bugs."
         />
-        <br />
-        <SelectHtml
-          id="avoid_bugs_alt"
-          switch={gender}
-          male={<FormattedMessage><strong>He</strong> avoids bugs.</FormattedMessage>}
-          female={<FormattedMessage><strong>She</strong> avoids bugs.</FormattedMessage>}
-          other={<FormattedMessage><strong>They</strong> avoid bugs.</FormattedMessage>}
-        />
         <p><i>plurals:</i></p>
         <Plural
           id="items_count"
@@ -54,16 +51,7 @@ export default function ComponentUsingMacro() {
           one="There is # item."
           other="There are # items."
         />
-        <br />
-        <PluralHtml
-          id="items_count_alt"
-          count={itemsCount2}
-          $0={<FormattedMessage>There is <strong>no</strong> item.</FormattedMessage>}
-          one={<FormattedMessage>There is <strong>#</strong> item.</FormattedMessage>}
-          other={<FormattedMessage>There are <strong>#</strong> items.</FormattedMessage>}
-        />
       </div>
-
     </IntlProvider>
   )
 }
