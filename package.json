@@ -4,7 +4,8 @@
   "private": true,
   "dependencies": {
     "babel-plugin-macros": "^3.1.0",
-    "locize": "2.2.4",
+    "i18next-subliminal": "1.0.0",
+    "locize": "4.0.7",
     "locizer": "3.4.3",
     "react": "19.0.0",
     "react-dom": "19.0.0",

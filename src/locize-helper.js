@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { FormattedMessage as FM, IntlProvider as IP } from 'react-intl';
 import locizer from 'locizer';
-import 'locize';
+import { startStandalone } from 'locize';
+import { wrap } from 'i18next-subliminal';
 
 const IS_DEV = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
 const DEFAULTNAMESPACE = 'common'; // the translation file to use
@@ -13,6 +14,11 @@ const UPDATE_VALUES = true; // should update on locize if value changes in code
 locizer.init({
   projectId: PROJECTID,
   apiKey: APIKEY
+});
+
+startStandalone({
+  projectId: PROJECTID,
+  version: 'latest'
 });
 
 let supportedLngs = [];
@@ -70,7 +76,15 @@ export class IntlProvider extends Component {
       }
       Object.keys(messages).forEach((l) => {
         translations[l] = translations[l] || {};
-        translations[l][namespace] = messages[l];
+        translations[l][namespace] = {};
+        Object.keys(messages[l]).forEach((k) => {
+          translations[l][namespace][k] = wrap(messages[l][k], {
+            key: k,
+            ns: namespace,
+            lng: l,
+            source: 'key'
+          })
+        })
       })
       if (this.state.locale !== currentLocale) this.setState({ locale: currentLocale });
     });
@@ -142,7 +156,14 @@ function supportLocize() {
       }
 
       render() {
-        return <WrappedComponent {...this.props} />
+        const props = { ...this.props }
+        props.defaultMessage = wrap(this.props.defaultMessage, {
+          key: props.id,
+          ns: props.namespace,
+          lng: currentLocale || locizer.referenceLng,
+          source: 'key'
+        })
+        return <WrappedComponent {...props} />
       }
     }
 
