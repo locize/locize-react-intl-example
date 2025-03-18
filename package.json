@@ -6,10 +6,13 @@
     "babel-plugin-macros": "^3.1.0",
     "locize": "2.2.4",
     "locizer": "3.4.3",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "react-intl": "5.20.2",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "react-intl": "7.1.6",
     "react-scripts": "^5.0.1"
+  },
+  "overrides": {
+    "typescript": "5.7.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -21,7 +24,7 @@
   "devDependencies": {
     "babel-cli": "6.26.0",
     "babel-plugin-react-intl": "2.4.0",
-    "babel-preset-react-app": "10.0.0"
+    "babel-preset-react-app": "10.1.0"
   },
   "browserslist": {
     "development": [

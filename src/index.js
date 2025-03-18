@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
@@ -9,11 +9,11 @@ import registerServiceWorker from './registerServiceWorker';
 // you can add one prop namespace to set which translation file to use
 import { IntlProvider } from './locize-helper';
 
-ReactDOM.render(
+const root = createRoot(document.getElementById('root'))
+root.render(
   <IntlProvider namespace="app">
     <App/>
-  </IntlProvider>,
-  document.getElementById('root')
+  </IntlProvider>
 );
 
 registerServiceWorker();

@@ -15,6 +15,13 @@ locizer.init({
   apiKey: APIKEY
 });
 
+let supportedLngs = [];
+// let supportedLngs = ['en', 'de'];
+// or fetch them from locize:
+locizer.getLanguages((err, lngs) => {
+  supportedLngs = Object.keys(lngs);
+});
+
 let translations = {};
 let currentLocale;
 
@@ -54,7 +61,13 @@ export class IntlProvider extends Component {
 
     // load the given file form locize and detect language while doing so
     locizer.loadAll(namespace, (err, messages) => {
-      currentLocale = this.props.locale || locizer.lng || locizer.referenceLng;
+      if (this.props.locale) {
+        currentLocale = this.props.locale;
+      } else if (!currentLocale && locizer.lng && supportedLngs.indexOf(locizer.lng) > -1) {
+        currentLocale = locizer.lng;
+      } else if (!currentLocale) {
+        currentLocale = locizer.referenceLng;
+      }
       Object.keys(messages).forEach((l) => {
         translations[l] = translations[l] || {};
         translations[l][namespace] = messages[l];
@@ -66,7 +79,7 @@ export class IntlProvider extends Component {
   render() {
     const { children, namespace, locale: localeViaProps } = this.props;
     const { locale: localeViaState, setLocale } = this.state;
-    const locale = localeViaProps || localeViaState || currentLocale;
+    const locale = localeViaProps || localeViaState || currentLocale || locizer.referenceLng;
 
     if (!locale || !translations[locale] || !translations[locale][namespace]) return null; // we wait for render until loaded
 
