@@ -6,7 +6,7 @@
     "babel-plugin-macros": "^3.1.0",
     "i18next-subliminal": "1.0.0",
     "locize": "4.0.21",
-    "locizer": "3.4.3",
+    "locizer": "5.0.2",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-intl": "7.1.6",
